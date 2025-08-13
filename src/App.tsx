@@ -17,18 +17,15 @@ export const goodsFromServer = [
 ];
 
 enum SortMethod {
-  Alphabet = 'alphabet',
-  Length = 'length',
-}
-
-enum ReverseMethod {
-  Reverse = 'reverse',
+  Default,
+  Alphabet,
+  Length,
 }
 
 function getPreparedGood(
   goods: string[],
-  sortField: SortMethod | '',
-  reverseField: ReverseMethod | '',
+  sortField: SortMethod,
+  reverseField: boolean,
 ) {
   const preparedGood = [...goods];
 
@@ -55,8 +52,8 @@ function getPreparedGood(
 }
 
 export const App: React.FC = () => {
-  const [sortField, setSortField] = useState<SortMethod | ''>('');
-  const [reverseField, setReverseField] = useState<ReverseMethod | ''>('');
+  const [sortField, setSortField] = useState<SortMethod>(SortMethod.Default);
+  const [reverseField, setReverseField] = useState(false);
   const visibleGoods = getPreparedGood(
     goodsFromServer,
     sortField,
@@ -89,11 +86,9 @@ export const App: React.FC = () => {
         {/* для кнопки реверс встановив пермикач зміни стану(true-false, це toogle кнопка) */}
         <button
           type="button"
-          onClick={() =>
-            setReverseField(prev => (prev ? '' : ReverseMethod.Reverse))
-          }
+          onClick={() => setReverseField(prev => !prev)}
           className={cn('button  is-warning ', {
-            'is-light': reverseField !== ReverseMethod.Reverse,
+            'is-light': !reverseField,
           })}
         >
           Reverse
@@ -102,8 +97,8 @@ export const App: React.FC = () => {
           <button
             type="button"
             onClick={() => {
-              setSortField('');
-              setReverseField('');
+              setSortField(SortMethod.Default);
+              setReverseField(false);
             }}
             className="button is-danger is-light"
           >
